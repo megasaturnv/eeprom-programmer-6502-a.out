@@ -74,13 +74,11 @@ void printContents() {
   }
 }
 
-
-// 4-bit hex decoder for common anode 7-segment display
-byte data[] = { 0x81, 0xcf, 0x92, 0x86, 0xcc, 0xa4, 0xa0, 0x8f, 0x80, 0x84, 0x88, 0xe0, 0xb1, 0xc2, 0xb0, 0xb8 };
-
-// 4-bit hex decoder for common cathode 7-segment display
-// byte data[] = { 0x7e, 0x30, 0x6d, 0x79, 0x33, 0x5b, 0x5f, 0x70, 0x7f, 0x7b, 0x77, 0x1f, 0x4e, 0x3d, 0x4f, 0x47 };
-
+void serialFlush() {
+  while (Serial.available() > 0) {
+    char t = Serial.read();
+  }
+}
 
 void setup() {
   // put your setup code here, to run once:
@@ -91,8 +89,17 @@ void setup() {
   pinMode(WRITE_EN, OUTPUT);
   Serial.begin(57600);
 
+  Serial.print("Flushing Serial Port Rx...");
+  serialFlush();
+  Serial.println("Serial Flush Complete");
+
+  //todo let Arduino wait here until it receives an R, W or E
+  //If R, put into read mode and dump contents of EEPROM
+  //If W, write serial data to the EEPROM starting at address 0
+  //If E, erase the EEPROM
+
   // Erase entire EEPROM
-  Serial.print("Erasing EEPROM");
+  /*Serial.print("Erasing EEPROM");
   for (int address = 0; address <= 2047; address += 1) {
     writeEEPROM(address, 0xff);
 
@@ -100,24 +107,24 @@ void setup() {
       Serial.print(".");
     }
   }
-  Serial.println(" done");
-
-
-  // Program data bytes
-  Serial.print("Programming EEPROM");
-  for (int address = 0; address < sizeof(data); address += 1) {
-    writeEEPROM(address, data[address]);
-
-    if (address % 64 == 0) {
-      Serial.print(".");
+  Serial.println(" done");*/
+  
+  // Program EEPROM with data from serial port
+  Serial.println("Programming EEPROM. Please send bytes via serial starting at address 0...");
+  unsigned int address = 0;
+  while (address < 32768) { //Number of bytes will never be larger than 32768
+    if (Serial.available() > 0) { //Loop until there's something in the serial buffer
+      writeEEPROM(address, Serial.read()); //Write data to EEPROM
+      address++;
+      Serial.println(Serial.available()); //Tell a_out_uploader.py how full the buffer is, so it can slow down if needed. Max is 63
     }
   }
-  Serial.println(" done");
+  //Serial.println(" done");
 
 
   // Read and print out the contents of the EERPROM
-  Serial.println("Reading EEPROM");
-  printContents();
+  //Serial.println("Reading EEPROM");
+  //printContents();
 }
 
 
