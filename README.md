@@ -1,3 +1,10 @@
+# Arduino EEPROM programmer a.out file sender for the 6502 project
+This is a fork of Ben Eater's Arduino EEPROM programmer. It allows you to send a compiled a.out file to an EEPROM ( 28C256 ) for the 6502 project. Useful for those who do not wish to use a USB EEPROM programmer.
+
+Still work in progress so check back soon!
+
+---
+
 # Arduino EEPROM programmer
 
 Copyright 2017 Ben Eater
