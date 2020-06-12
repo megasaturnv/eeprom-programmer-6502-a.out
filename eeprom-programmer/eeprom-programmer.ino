@@ -6,8 +6,8 @@
 #define WRITE_EN 13
 
 /*
- * Output the address bits and outputEnable signal using shift registers.
- */
+   Output the address bits and outputEnable signal using shift registers.
+*/
 void setAddress(int address, bool outputEnable) {
   shiftOut(SHIFT_DATA, SHIFT_CLK, MSBFIRST, (address >> 8) | (outputEnable ? 0x00 : 0x80));
   shiftOut(SHIFT_DATA, SHIFT_CLK, MSBFIRST, address);
@@ -19,8 +19,8 @@ void setAddress(int address, bool outputEnable) {
 
 
 /*
- * Read a byte from the EEPROM at the specified address.
- */
+   Read a byte from the EEPROM at the specified address.
+*/
 byte readEEPROM(int address) {
   for (int pin = EEPROM_D0; pin <= EEPROM_D7; pin += 1) {
     pinMode(pin, INPUT);
@@ -36,8 +36,8 @@ byte readEEPROM(int address) {
 
 
 /*
- * Write a byte to the EEPROM at the specified address.
- */
+   Write a byte to the EEPROM at the specified address.
+*/
 void writeEEPROM(int address, byte data) {
   setAddress(address, /*outputEnable*/ false);
   for (int pin = EEPROM_D0; pin <= EEPROM_D7; pin += 1) {
@@ -56,8 +56,8 @@ void writeEEPROM(int address, byte data) {
 
 
 /*
- * Read the contents of the EEPROM and print them to the serial monitor.
- */
+   Read the contents of the EEPROM and print them to the serial monitor.
+*/
 void printContents() {
   for (int base = 0; base <= 255; base += 16) {
     byte data[16];
